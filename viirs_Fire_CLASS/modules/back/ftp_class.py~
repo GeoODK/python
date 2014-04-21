@@ -1,0 +1,55 @@
+import ftplib
+import os
+import glob
+import subprocess
+from datetime import date,timedelta
+# Make the ftp connection
+ftp = ftplib.FTP('ftp-npp.class.ngdc.noaa.gov')
+ftp.login()
+dirlist = ftp.nlst() # Gets the list of directories of FTP
+
+#Defining the Definitions for the directoryies
+class_directory = '/home/jnordling/Class/'
+scratch_directory = '/home/jnordling/Class/scratch/'
+output_directory = '/home/jnordling/Class/output/'
+
+yesturday = str((date.today()-timedelta(1))).replace("-","")
+
+
+for d in dirlist:
+    if d ==yesturday:
+        ftp.cwd(d+'/VIIRS/VIIRS-Active-Fires-ARP') # change FTP directory to a specified folder
+        files = ftp.nlst()  # Get list of files new directory
+        
+        # For each of the files for the files (should be .tar and .xml)
+        for i in files:
+            out_putfile = open(scratch_directory+i,'wb')
+            ftp.retrbinary('RETR '+i,out_putfile.write) # Download and write file to the scratch directory
+            out_putfile.close() # Close the open file and move to next file
+            # File download
+
+
+os.chdir(scratch_directory) # Change the directory to scratch folder
+
+# Get each of the tar files that have been downloaded them
+tar_files = glob.glob('./*.tar')
+print tar_files
+for tar in tar_files:
+    #Fow each of the tar file begin subprocess that unzips it
+    x = subprocess.Popen(["tar","-xvf",tar])
+    x.wait() # wait before subprocess is complete unziping
+
+# Unconpress the .gz files
+gz_file = glob.glob("./*.gz")
+for gz in gz_file:
+    #subprocess(["gunzip",os.getcwd()+'/'+gz])
+    # 
+    f= scratch_directory+os.path.basename(gz)
+    p = subprocess.Popen(["gunzip",gz])
+    p.wait()
+# Remove un-need files
+os.system("rm -rf "+scratch_directory+ "*.tar")
+os.system("rm -rf "+scratch_directory+ "*.xml")
+
+os.system("python /home/jnordling/Class/modules/python/h5py_reader.py")
+print 'Download Complete'
