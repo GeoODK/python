@@ -1,3 +1,8 @@
+# Date: 04/19/2014
+# Author: Jon Nordling
+# Purpose:
+# Module used for downloading data from CLASS FTP
+
 import ftplib
 import os
 import glob

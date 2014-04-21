@@ -1,3 +1,8 @@
+# Date: 04/19/2014
+# Author: Jon Nordling
+# Purpose:
+# Module used for HDF5 Reading
+
 import 	h5py
 import datetime
 import glob
