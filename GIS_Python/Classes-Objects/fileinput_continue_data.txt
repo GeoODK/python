@@ -1,0 +1,13 @@
+#The order of planets from closest to furthest from the sun
+Mercury
+Venus
+Earth
+# Mars is half Earth's diameter, but only
+# 0.11 times Earth's mass.
+Mars
+Jupiter
+Saturn
+Uranus
+Neptune
+# Pluto is only 0.002 times the mass of Earth.
+Pluto  
